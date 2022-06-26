@@ -1,15 +1,5 @@
-<!DOCTYPE html>
-<html >
-<head>
-  <meta charset="UTF-8">
-  <title>ReminderApp - Create A Todo With Django</title>
-  {% load static %}
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-   <!--<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">-->
-    <link rel="stylesheet" type="text/css" href="./static/style.css">
-</head>
-<body>
+{% extends 'base.html' %}
+{% block content %}
 <div django-app="TaskManager">
     <div class="container">
             <div class="content">
@@ -18,7 +8,7 @@
             <form action="" method="post">
             {% csrf_token %} <!-- csrf token for basic security -->
                 <div class="inputContainer">
-                    <input type="text" id="description" class="taskName" placeholder="What do you need to do?" name="description" required>
+                    <input type="text" id="description" class="taskName" placeholder="What do you need to do?" value="{{edit_data.content}}" name="description" required>
                     <label for="description">Description</label>
                 </div>
                 <div class="inputContainer half last">
@@ -26,13 +16,13 @@
                     <select id="category" class="taskCategory" name="category_select">
                     <option class="disabled" value="">Choose a category</option>
                     {% for category in categories %}
-                        <option class="" value="{{ category.name }}" name="{{ category.name }}">{{ category.name }}</option>
+                        <option class="" {% if edit_data.category.id == category.id %}selected{% endif %} value="{{ category.name }}" name="{{ category.name }}">{{ category.name }}</option>
                     {% endfor %}
                     </select>
                     <label for="category">Category</label>
                 </div>
                 <div class="inputContainer half last right">
-                    <input type="date" id="dueDate" class="taskDate" name="date">
+                    <input type="date" id="dueDate" class="taskDate" name="date" value="{{edit_data.due_date}}">
                     <label for="dueDate">Due Date</label>
                 </div>
                 <div class="row">
@@ -44,8 +34,11 @@
                 <li class="taskItem">
                     <input type="checkbox" class="taskCheckbox" name="checkedbox" id="{{ todo.id }}" value="{{ todo.id }}">
                     <label for="{{ todo.id }}"><span class="complete-">{{ todo.title }}</span></label>
-                    <span class="category-{{ todo.category }}">{{ todo.category }}</span>
-                    <strong class="taskDate"><i class="fa fa-calendar"></i>{{ todo.created }} - {{ todo.due_date }}</strong>
+                    <a href="{% url 'home' %}?id={{todo.id}}" class="mr-2"><i class="fa fa-pencil float-right"></i></a>
+                    <span class="badge badge-primary float-right mr-2 ">{{ todo.category }}</span>
+                    
+                    <strong class="taskDate"><i class="fa fa-calendar"></i>{{ todo.created_at }} - {{ todo.due_date }}</strong>
+
                 </li>
             {% endfor %}
             </ul><!-- taskList -->
@@ -53,6 +46,4 @@
             </div><!-- content -->
  </div><!-- container -->
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-</body>
-</html>
+{% endblock %}
